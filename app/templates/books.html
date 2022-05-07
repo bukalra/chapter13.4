@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is where a book table creation take place</title>
+    <style>
+        table, th, tr, td {border: 1px solid black;}
+    </style>
+</head>
+
+<h2>Home library:</h2>
+
+<table>
+    <thead>
+    <th>No.</th>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Author first name</th>
+    <th>Author last name</th>
+    <th>Date added</th>
+    <th>Genre</th>
+    <th>Is it rent?</th>
+    <th>Remove</th>
+
+    </thead>
+    {% for book, rent, author in zip(books, rents, authors) %}
+
+    <tr>
+        <td>{{ book.id}}</td>
+        <td><a href="/books/{{ loop.index }}">{{ book.title_db }}</a></td>
+        <td>{{ book.description_db }}</td>
+        <td>{{ author.first_name_db }}</td>
+        <td>{{ author.last_name_db }}</td>
+        <td>{{ book.date_db }}</td>
+        <td>{{ book.genre_db}}</td>
+        <td>{% if rent.rent_db == '0' %} False {% else %} True {% endif %}</td>
+        <td>
+            <form method="POST" action="{{ url_for('delete_book', book_id = book.id)}}">
+                    <button type="submit">Delete book</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+<div>
+    <h2> Add new book to the home library: </h2>
+    <form method="POST" action="/books/">
+        {{ form.hidden_tag() }}
+        <table>
+            {% for field in form if field.widget.input_type != 'hidden' %}
+                <tr>
+                    <th>{{ field.label }} {% if field.flags.required %}*{% endif %}</th>
+                    <td> {{ field }}</td>
+                </tr>
+            {% endfor %}
+            
+        </table>
+        <input type="submit" value="Go">
+    </form>
+</div>
+</body>
+</html>
